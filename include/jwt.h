@@ -17,6 +17,8 @@
 #include <stdio.h>
 #include <time.h>
 
+#include <jansson.h>
+
 #ifdef _MSC_VER
 
 	#define DEPRECATED(func) __declspec(deprecated) func
@@ -255,6 +257,21 @@ JWT_EXPORT long jwt_get_grant_int(jwt_t *jwt, const char *grant);
  * values (e.g. arrays) or use jwt_get_grant() to get string values.
  */
 JWT_EXPORT int jwt_get_grant_bool(jwt_t *jwt, const char *grant);
+
+/**
+ * Return the value of a grant as jansson json_t object.
+ *
+ * Returns the JSON encoded string value for a grant (e.g. "iss"). If it
+ * does not exist, NULL will be returned.
+ *
+ * @param jwt Pointer to a JWT object.
+ * @param grant String containing the name of the grant to return a value
+ *     for. If this is NULL, all grants will be returned as a JSON encoded
+ *     hash.
+ * @return Returns a json_t object for the value, or NULL when not found. The
+ *     returned object must be released by the caller by calling json_decref.
+ */
+JWT_EXPORT json_t *jwt_get_grants(jwt_t *jwt, const char *grant);
 
 /**
  * Return the value of a grant as JSON encoded object string.

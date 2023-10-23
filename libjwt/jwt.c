@@ -771,7 +771,7 @@ int jwt_get_grant_bool(jwt_t *jwt, const char *grant)
 	return get_js_bool(jwt->grants, grant);
 }
 
-char *jwt_get_grants_json(jwt_t *jwt, const char *grant)
+json_t *jwt_get_grants(jwt_t *jwt, const char *grant)
 {
 	json_t *js_val = NULL;
 
@@ -784,6 +784,27 @@ char *jwt_get_grants_json(jwt_t *jwt, const char *grant)
 		js_val = json_object_get(jwt->grants, grant);
 	else
 		js_val = jwt->grants;
+
+	if (js_val == NULL) {
+		errno = ENOENT;
+		return NULL;
+	}
+
+	errno = 0;
+
+	return js_val;
+}
+
+char *jwt_get_grants_json(jwt_t *jwt, const char *grant)
+{
+	json_t *js_val = NULL;
+
+	if (!jwt) {
+		errno = EINVAL;
+		return NULL;
+	}
+
+	js_val = jwt_get_grants(jwt, grant);
 
 	if (js_val == NULL) {
 		errno = ENOENT;
